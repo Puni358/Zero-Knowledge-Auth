@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zero-Knowledge vs. Password Hashing — Live Demo</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="masthead">
+  <h1>What does a server actually need to know about you?</h1>
+  <p class="masthead-sub">Left: a password gets hashed and stored. Right: nothing ever leaves your head. Same login box, two very different servers.</p>
+  <nav class="demo-nav">
+    <a href="{{ url_for('index') }}" class="demo-nav-link active">🔐 Password vs ZKP</a>
+    <a href="{{ url_for('biometric_page') }}" class="demo-nav-link">📷 Biometric ZK unlock</a>
+    <a href="{{ url_for('portal_page') }}" class="demo-nav-link">📈 Trading KYC gate</a>
+  </nav>
+</header>
+
+<section class="eve" id="eve-section">
+  <div class="eve-head">
+    <div>
+      <div class="eve-title">🕵️ Eve is on the Wi-Fi</div>
+      <p class="eve-sub">Hashing protects the <em>database</em>. It does nothing for the <em>network</em> — whatever the browser sends still has to get to the server somehow. Turn this on, then use either login box above and watch exactly what a man-in-the-middle would capture, live, from the real requests this page sends.</p>
+    </div>
+    <button id="eve-toggle" class="eve-toggle">🕵️ Simulate a Wi-Fi / MITM interception (start Eve)</button>
+  </div>
+  <div class="eve-log" id="eve-log">
+    <p class="hint">Not listening. Click the button above, then create an account or log in on either side.</p>
+  </div>
+</section>
+
+<main class="arena">
+
+  <section class="panel panel--traditional" id="panel-traditional">
+    <div class="panel-head">
+      <h2>Hash &amp; store</h2>
+      <p class="panel-tag">what almost every login form still does</p>
+    </div>
+
+    <form id="trad-register" class="login-box">
+      <label>username<input type="text" name="username" value="judge" required></label>
+      <label>password<input type="password" name="password" placeholder="type anything" required></label>
+      <button type="submit">Create account</button>
+    </form>
+
+    <div class="db-view">
+      <div class="db-view-label">server's database</div>
+      <div class="db-row"><span>username</span><code id="trad-db-user">—</code></div>
+      <div class="db-row"><span>password_hash (MD5)</span><code id="trad-db-hash">—</code></div>
+    </div>
+
+    <button id="breach-btn" class="danger-btn" disabled>Simulate GPU breach</button>
+
+    <div class="breach-log" id="breach-log">
+      <p class="hint">Create an account above, then run the breach.</p>
+    </div>
+  </section>
+
+  <section class="divider" aria-hidden="true">
+    <span>vs</span>
+  </section>
+
+  <section class="panel panel--zkp" id="panel-zkp">
+    <div class="panel-head">
+      <h2>Prove, don't tell</h2>
+      <p class="panel-tag">Schnorr zero-knowledge identification</p>
+    </div>
+
+    <form id="zkp-register" class="login-box">
+      <label>username<input type="text" name="username" value="judge" required></label>
+      <label>password<input type="password" name="password" placeholder="same password, try it" required></label>
+      <button type="submit">Create account</button>
+    </form>
+
+    <div class="db-view">
+      <div class="db-view-label">server's database</div>
+      <div class="db-row"><span>username</span><code id="zkp-db-user">—</code></div>
+      <div class="db-row"><span>public verifier (y)</span><code id="zkp-db-verifier">—</code></div>
+    </div>
+
+    <form id="zkp-login" class="login-box">
+      <label>password to log in<input type="password" name="password" placeholder="prove you know it" required></label>
+      <button type="submit" disabled id="zkp-login-btn">Log in with proof</button>
+    </form>
+
+    <div class="intercept" id="zkp-intercept">
+      <div class="intercept-label">intercepted on the wire</div>
+      <div class="intercept-row"><span>session challenge (c)</span><code id="zkp-challenge">—</code></div>
+      <div class="intercept-row"><span>user proof (s)</span><code id="zkp-proof">—</code></div>
+      <div class="intercept-verdict" id="zkp-verdict"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="takeaway" id="takeaway">
+  <p>Log in on the right twice with the same password and check the proof above — it's different every time. A recording of today's login is worthless tomorrow.</p>
+</footer>
+
+<script src="{{ url_for('static', filename='zkp-core.js') }}"></script>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

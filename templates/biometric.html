@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Biometric Zero-Knowledge Unlock — Live Demo</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="masthead">
+  <h1>Your face never leaves this tab.</h1>
+  <p class="masthead-sub">A camera frame goes in. A single unguessable number comes out. The server only ever sees that number — never a photo, never a feature vector.</p>
+  <nav class="demo-nav">
+    <a href="{{ url_for('index') }}" class="demo-nav-link">🔐 Password vs ZKP</a>
+    <a href="{{ url_for('biometric_page') }}" class="demo-nav-link active">📷 Biometric ZK unlock</a>
+    <a href="{{ url_for('portal_page') }}" class="demo-nav-link">📈 Trading KYC gate</a>
+  </nav>
+</header>
+
+<main class="arena arena--bio">
+
+  <section class="panel panel--bio" id="panel-enroll">
+    <div class="panel-head">
+      <h2>1. Enroll</h2>
+      <p class="panel-tag">capture → hash → discard the pixels</p>
+    </div>
+
+    <div class="cam-frame" id="cam-frame">
+      <video id="cam-video" autoplay playsinline muted></video>
+      <div class="cam-scan" id="cam-scan" hidden></div>
+      <div class="cam-hint" id="cam-hint">Camera off</div>
+    </div>
+
+    <div class="cam-controls">
+      <button id="cam-start-btn">🎥 Enable camera</button>
+      <button id="cam-simulate-btn" class="secondary-btn">🎲 No camera on this machine? Simulate a frame</button>
+    </div>
+
+    <canvas id="cam-canvas" width="24" height="24" style="display:none"></canvas>
+
+    <div class="grayscale-view">
+      <div class="grayscale-label">what actually gets hashed — a 24×24 grayscale buffer, magnified (this never leaves the browser either)</div>
+      <canvas id="grayscale-canvas" width="192" height="192" class="grayscale-canvas"></canvas>
+    </div>
+
+    <button id="enroll-btn" class="danger-btn" disabled>📸 Capture &amp; enroll</button>
+
+    <div class="math-log" id="enroll-math">
+      <p class="hint">Enable the camera, then capture a frame to see the math live.</p>
+    </div>
+
+    <div class="db-view">
+      <div class="db-view-label">server's entire biometric record for this subject</div>
+      <div class="db-row"><span>subject id</span><code id="bio-db-user">—</code></div>
+      <div class="db-row"><span>image files stored</span><code>0</code></div>
+      <div class="db-row"><span>feature vectors stored</span><code>0</code></div>
+      <div class="db-row"><span>public verifier (y = g^x mod p)</span><code id="bio-db-verifier">—</code></div>
+    </div>
+  </section>
+
+  <section class="divider" aria-hidden="true"><span>→</span></section>
+
+  <section class="panel panel--bio-unlock" id="panel-unlock">
+    <div class="panel-head">
+      <h2>2. Unlock</h2>
+      <p class="panel-tag">a fresh Schnorr proof, not a stored photo match</p>
+    </div>
+
+    <button id="unlock-btn" class="primary-btn" disabled>🔓 Scan to unlock</button>
+
+    <div class="math-log" id="unlock-math">
+      <p class="hint">Enroll on the left first.</p>
+    </div>
+
+    <div class="intercept" id="bio-intercept">
+      <div class="intercept-label">what actually crossed the network just now</div>
+      <div class="intercept-row"><span>commitment (t)</span><code id="bio-t">—</code></div>
+      <div class="intercept-row"><span>server challenge (c)</span><code id="bio-c">—</code></div>
+      <div class="intercept-row"><span>response (s)</span><code id="bio-s">—</code></div>
+      <div class="intercept-verdict" id="bio-verdict"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="takeaway">
+  <p>Unlock twice in a row and compare (t, s) — different every time, same face. There is nothing here a database breach, a leaked photo, or a replayed network capture could turn back into your face.</p>
+</footer>
+
+<script src="{{ url_for('static', filename='zkp-core.js') }}"></script>
+<script src="{{ url_for('static', filename='biometric.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trading Account — KYC Gate — Live Demo</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="masthead">
+  <h1>Prove your KYC is verified. Reveal nothing else.</h1>
+  <p class="masthead-sub">Every trading platform demands PAN-based KYC before you can place a trade. Scan the code with your phone. Your PAN photo is hashed on your phone and never uploaded — only a live Schnorr proof crosses the network, the same math the biometric demo uses.</p>
+  <nav class="demo-nav">
+    <a href="{{ url_for('index') }}" class="demo-nav-link">🔐 Password vs ZKP</a>
+    <a href="{{ url_for('biometric_page') }}" class="demo-nav-link">📷 Biometric ZK unlock</a>
+    <a href="{{ url_for('portal_page') }}" class="demo-nav-link active">📈 Trading KYC gate</a>
+  </nav>
+</header>
+
+<main class="arena arena--portal">
+
+  <section class="panel panel--portal" id="portal-pending">
+    <div class="panel-head">
+      <h2>📈 Open a trading account</h2>
+      <p class="panel-tag">KYC required — your PAN photo never reaches this server</p>
+    </div>
+
+    <div class="qr-box">
+      <img id="qr-img" alt="QR code to open your wallet" class="qr-img">
+      <p class="qr-caption" id="qr-caption">Generating session…</p>
+      <p class="qr-network-note">Phone and this computer need to share a network — same Wi-Fi, a hotspot from either device, or Bluetooth tethering. No internet required, only a local link between the two.</p>
+      <a id="wallet-link" href="#" target="_blank" class="wallet-link">📱 Open wallet here instead (same device)</a>
+    </div>
+
+    <div class="portal-status" id="portal-status">
+      <p class="hint">Waiting for a proof from your phone…</p>
+    </div>
+
+    <button id="portal-reset-btn" class="secondary-btn" hidden>🔄 Start a new session</button>
+  </section>
+
+  <section class="panel panel--portal-result" id="portal-result" hidden>
+    <div class="panel-head">
+      <h2 id="result-title">—</h2>
+      <p class="panel-tag" id="result-tag">—</p>
+    </div>
+
+    <div class="verdict-big" id="verdict-big">—</div>
+
+    <div class="math-log" id="result-math"></div>
+
+    <div class="db-view">
+      <div class="db-view-label">what this trading platform's server actually received, ever</div>
+      <div class="db-row"><span>PAN card images stored</span><code>0</code></div>
+      <div class="db-row"><span>PAN numbers stored</span><code>0</code></div>
+      <div class="db-row"><span>public verifier (y = g^x mod p)</span><code id="field-y">—</code></div>
+    </div>
+    <p class="portal-footnote">y, t, c, s above are the entire record. None of them can be turned back into the photo that produced them.</p>
+
+    <button id="portal-again-btn" class="secondary-btn">🔄 Try another session</button>
+  </section>
+
+</main>
+
+<footer class="takeaway">
+  <p>No PAN image was uploaded. No PAN number, name, or DOB was ever asked for. The platform and the wallet never even needed to agree on who you are — only on one signed fact, proved fresh, live, over the air.</p>
+</footer>
+
+<script src="{{ url_for('static', filename='portal.js') }}"></script>
+</body>
+</html>

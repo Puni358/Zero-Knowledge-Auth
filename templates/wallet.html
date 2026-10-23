@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My KYC Wallet — Live Demo</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="wallet-body">
+
+<main class="wallet-shell">
+
+  <div class="wallet-phone">
+    <div class="wallet-statusbar"></div>
+
+    <div class="wallet-screen">
+      <h1 class="wallet-title">🪪 My KYC Wallet</h1>
+      <p class="wallet-session" id="wallet-session">no trading platform session — open this by scanning a platform's QR code</p>
+
+      <p class="wallet-lede">Upload your PAN card photo. It's hashed into a one-time secret right here on your phone and is never uploaded — not to this server, not anywhere. Only a proof that you hold it is sent.</p>
+
+      <div class="pan-upload" id="pan-upload">
+        <input type="file" id="pan-file" accept="image/*" required hidden>
+        <label for="pan-file" class="pan-upload-label" id="pan-upload-label">📎 Tap to upload your PAN card photo <span class="required-star">(required)</span></label>
+        <img id="pan-preview" class="pan-preview" hidden>
+        <div class="pan-hash-row" id="pan-hash-row" hidden>
+          <span>SHA-256 of image (local only)</span><code id="pan-hash">—</code>
+        </div>
+        <p class="pan-upload-note" id="pan-upload-note" hidden>0 bytes of this image were sent anywhere. Only the hash above was ever computed, and only for this on-screen demonstration.</p>
+      </div>
+
+      <button id="prove-btn" class="danger-btn" disabled>📎 Upload a PAN photo to continue</button>
+
+      <div class="math-log" id="prove-math">
+        <p class="hint">Upload a photo above, then approve to run the proof live.</p>
+      </div>
+
+      <div class="intercept" id="wallet-intercept" hidden>
+        <div class="intercept-label">what actually crossed the network just now</div>
+        <div class="intercept-row"><span>commitment (t)</span><code id="w-t">—</code></div>
+        <div class="intercept-row"><span>server challenge (c)</span><code id="w-c">—</code></div>
+        <div class="intercept-row"><span>response (s)</span><code id="w-s">—</code></div>
+        <div class="intercept-verdict" id="w-verdict"></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script src="{{ url_for('static', filename='zkp-core.js') }}"></script>
+<script src="{{ url_for('static', filename='wallet.js') }}"></script>
+</body>
+</html>
